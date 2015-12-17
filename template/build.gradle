@@ -1,0 +1,12 @@
+version = '0.9.1-SNAPSHOT'
+mainClassName = 'com.ryosms.ev3.template.Ev3Application'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Template of "Lego/LeJOS Mindstorms EV3 Project" using gradle'
+        attributes 'Implementation-Version': version
+        attributes 'Main-Class': mainClassName
+    }
+    // note this builds one fat jar and it is not recommended for production use - just for illustration purpose
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}

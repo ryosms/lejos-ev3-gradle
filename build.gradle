@@ -1,3 +1,59 @@
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'application'
+    apply plugin: 'idea'
+
+    sourceCompatibility = 1.8
+    compileJava.options.encoding = 'UTF-8'
+
+    configurations {
+        sshAntTask
+        provided
+    }
+
+    sourceSets {
+        main.compileClasspath += configurations.provided
+        test.compileClasspath += configurations.provided
+        test.runtimeClasspath += configurations.provided
+    }
+
+    idea {
+        module {
+            scopes.PROVIDED.plus += [configurations.provided]
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        flatDir {
+            dirs ev3_home + '/lib/ev3'
+        }
+    }
+
+    dependencies {
+        sshAntTask 'org.apache.ant:ant-jsch:1.9.4', 'jsch:jsch:0.1.29'
+        provided 'lejos:ev3classes:1.0'
+        testCompile 'junit:junit:4.+'
+    }
+
+    test {
+        systemProperties 'property': 'value'
+    }
+
+    task deployEV3 << {
+        ant.taskdef(name: 'scp', classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp', classpath: configurations.sshAntTask.asPath)
+        ant.scp(todir: ev3_username + '@' + ev3_server + ':/home/lejos/programs',
+                password: ev3_password,
+                verbose: 'true') {
+            fileset(dir: './build/libs') {
+                include(name: '**/*.jar')
+            }
+        }
+    }
+
+}
+
+
 task wrapper(type: Wrapper) {
     gradleVersion '2.8'
 }

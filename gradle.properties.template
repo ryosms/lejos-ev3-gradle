@@ -1,0 +1,7 @@
+# EV3への接続アドレス
+ev3_server=10.0.1.1
+# EV3のユーザ／パスワード
+ev3_username=root
+ev3_password=
+# EV3のライブラリパス
+ev3_home=/path/to/your/leos/dir
