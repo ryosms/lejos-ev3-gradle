@@ -50,3 +50,8 @@ ex.) gradle your-project:build
 * Java SE 1.8.0u45
 * gradle 2.8
 * IntelliJ IDEA 15.0.2
+
+
+### Projects description
+
+- template: プロジェクトのサンプル
