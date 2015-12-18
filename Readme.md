@@ -55,3 +55,4 @@ ex.) gradle your-project:build
 ### Projects description
 
 - template: プロジェクトのサンプル
+- yoshioterada: [LEGO Mindstorms(leJOS) Hands On Lab](http://www.slideshare.net/OracleMiddleJP/lego-mindstormslejos-hands-on-lab)
