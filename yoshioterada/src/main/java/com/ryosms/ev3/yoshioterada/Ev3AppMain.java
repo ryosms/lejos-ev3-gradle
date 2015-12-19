@@ -13,6 +13,7 @@ import lejos.utility.Delay;
 /**
  * Created by ryosms on 2015/12/19.
  */
+@SuppressWarnings("unused")
 public class Ev3AppMain {
 
     // モーター
@@ -49,14 +50,22 @@ public class Ev3AppMain {
         Button.LEDPattern(0);
     }
 
+    /**
+     * モーターの制御
+     */
     private void manageMotor() {
         leftMotor.forward();        // 前進
+        rightMotor.forward();
         Delay.msDelay(3000);        // 3秒間実施
         leftMotor.stop();           // 停止
+        rightMotor.stop();
         leftMotor.setSpeed(100);    // スピード変更
+        rightMotor.setSpeed(100);
         leftMotor.backward();       // 後退
+        rightMotor.backward();
         Delay.msDelay(3000);        // 3秒間実施
         leftMotor.stop();           // 停止
+        rightMotor.stop();
     }
 
     private void onKeyTouchExit() {
