@@ -6,6 +6,8 @@ import lejos.hardware.Button;
 import lejos.hardware.Keys;
 import lejos.hardware.ev3.EV3;
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.Motor;
+import lejos.robotics.RegulatedMotor;
 import lejos.utility.Delay;
 
 /**
@@ -13,9 +15,13 @@ import lejos.utility.Delay;
  */
 public class Ev3AppMain {
 
+    // モーター
+    private static final RegulatedMotor leftMotor = Motor.C;
+    private static final RegulatedMotor rightMotor = Motor.B;
+
     public static void main(String[] args) {
         Ev3AppMain main = new Ev3AppMain();
-        main.printHelloWorld();
+        main.manageMotor();
         main.onKeyTouchExit();
     }
 
@@ -41,6 +47,16 @@ public class Ev3AppMain {
         // LEDを消灯する
         LCD.drawString("Pattern: Stop", 0, 2);
         Button.LEDPattern(0);
+    }
+
+    private void manageMotor() {
+        leftMotor.forward();        // 前進
+        Delay.msDelay(3000);        // 3秒間実施
+        leftMotor.stop();           // 停止
+        leftMotor.setSpeed(100);    // スピード変更
+        leftMotor.backward();       // 後退
+        Delay.msDelay(3000);        // 3秒間実施
+        leftMotor.stop();           // 停止
     }
 
     private void onKeyTouchExit() {
