@@ -60,6 +60,8 @@ public class Ev3AppMain {
     }
 
     private void onKeyTouchExit() {
+        LCD.clearDisplay();
+        LCD.drawString("Hit any key", 0, 0);
         EV3 ev3 = (EV3) BrickFinder.getLocal();
         Keys keys = ev3.getKeys();
         keys.waitForAnyPress();
