@@ -17,8 +17,8 @@ import lejos.utility.Delay;
 public class Ev3AppMain {
 
     // モーター
-    private static final RegulatedMotor leftMotor = Motor.C;
-    private static final RegulatedMotor rightMotor = Motor.B;
+    private static final RegulatedMotor leftMotor = Motor.B;
+    private static final RegulatedMotor rightMotor = Motor.C;
 
     public static void main(String[] args) {
         Ev3AppMain main = new Ev3AppMain();
