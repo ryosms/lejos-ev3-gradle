@@ -11,7 +11,9 @@ import lejos.robotics.RegulatedMotor;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
+import lejos.robotics.localization.OdometryPoseProvider;
 import lejos.robotics.navigation.MovePilot;
+import lejos.robotics.navigation.Navigator;
 import lejos.utility.Delay;
 
 /**
@@ -26,7 +28,7 @@ public class Ev3AppMain {
 
     public static void main(String[] args) {
         Ev3AppMain main = new Ev3AppMain();
-        main.managedByPilot1();
+        main.managedByPilot2();
         main.onKeyTouchExit();
     }
 
@@ -140,6 +142,29 @@ public class Ev3AppMain {
             pilot.rotate(90);
         }
         pilot.stop();
+    }
+
+    /**
+     * 高度なモーターの制御2
+     */
+    private void managedByPilot2() {
+        // 左車輪: 車輪の直径 = 5.6cm, 中心位置からの距離 = 6.4cm（左が正）
+        Wheel leftWheel = WheeledChassis.modelWheel(leftMotor, 5.6f).offset(6.4f);
+        // 右車輪: 車輪の直径 = 5.6cm, 中心位置からの距離 = 6.4cm（左が正）
+        Wheel rightWheel = WheeledChassis.modelWheel(rightMotor, 5.6f).offset(-6.4f);
+        Chassis chassis = new WheeledChassis(new Wheel[]{leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL);
+        MovePilot pilot = new MovePilot(chassis);
+
+        OdometryPoseProvider opProvider =
+                new OdometryPoseProvider(pilot);
+        Navigator navigator = new Navigator(pilot, opProvider);
+
+        navigator.goTo(20, 0);
+        navigator.goTo(20, 20);
+        navigator.goTo(0, 20);
+        navigator.goTo(0, 0);
+        navigator.followPath();
+        navigator.waitForStop();
     }
 
 
