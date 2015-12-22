@@ -8,7 +8,10 @@ import lejos.hardware.ev3.EV3;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.Motor;
 import lejos.robotics.RegulatedMotor;
-import lejos.robotics.navigation.DifferentialPilot;
+import lejos.robotics.chassis.Chassis;
+import lejos.robotics.chassis.Wheel;
+import lejos.robotics.chassis.WheeledChassis;
+import lejos.robotics.navigation.MovePilot;
 import lejos.utility.Delay;
 
 /**
@@ -126,8 +129,12 @@ public class Ev3AppMain {
      * 高度なモーターの制御1
      */
     private void managedByPilot1() {
-        DifferentialPilot pilot =
-                new DifferentialPilot(5.6f, 13.2f, leftMotor, rightMotor);
+        // 左車輪: 車輪の直径 = 5.6cm, 中心位置からの距離 = 6.4cm（左が正）
+        Wheel leftWheel = WheeledChassis.modelWheel(leftMotor, 5.6f).offset(6.4f);
+        // 右車輪: 車輪の直径 = 5.6cm, 中心位置からの距離 = 6.4cm（左が正）
+        Wheel rightWheel = WheeledChassis.modelWheel(rightMotor, 5.6f).offset(-6.4f);
+        Chassis chassis = new WheeledChassis(new Wheel[]{leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL);
+        MovePilot pilot = new MovePilot(chassis);
         for (int i = 0; i < 4; i++) {
             pilot.travel(20);
             pilot.rotate(90);
