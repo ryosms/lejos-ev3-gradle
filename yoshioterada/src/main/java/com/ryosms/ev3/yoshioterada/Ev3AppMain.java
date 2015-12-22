@@ -22,7 +22,7 @@ public class Ev3AppMain {
 
     public static void main(String[] args) {
         Ev3AppMain main = new Ev3AppMain();
-        main.manageMotor2();
+        main.manageMotor3();
         main.onKeyTouchExit();
     }
 
@@ -90,6 +90,26 @@ public class Ev3AppMain {
         rightMotor.rotateTo(360);
         Delay.msDelay(2000);
         rightMotor.rotateTo(0);
+    }
+
+    /**
+     * モーターの回転制御3
+     */
+    private void manageMotor3() {
+        // 2つの引数を持つメソッドの動作確認
+        // 同時に回転
+        leftMotor.rotate(360, true);
+        rightMotor.rotate(360, true);
+        Delay.msDelay(2000);
+
+        // 片車輪ずつ回転
+        leftMotor.rotate(360, false);
+        rightMotor.rotate(360, false);
+        Delay.msDelay(2000);
+
+        // 片車輪ずつ回転
+        leftMotor.rotate(360);
+        rightMotor.rotate(360);
     }
 
     private void onKeyTouchExit() {
