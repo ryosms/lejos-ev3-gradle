@@ -7,7 +7,10 @@ import lejos.hardware.Keys;
 import lejos.hardware.ev3.EV3;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.Motor;
+import lejos.hardware.port.SensorPort;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.RegulatedMotor;
+import lejos.robotics.SampleProvider;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
@@ -26,10 +29,12 @@ public class Ev3AppMain {
     private static final RegulatedMotor leftMotor = Motor.B;
     private static final RegulatedMotor rightMotor = Motor.C;
 
+    // 超音波センサー
+    private static final EV3UltrasonicSensor ursensor = new EV3UltrasonicSensor(SensorPort.S4);
+
     public static void main(String[] args) {
         Ev3AppMain main = new Ev3AppMain();
-        main.managedByPilot2();
-        main.onKeyTouchExit();
+        main.testSensor();
     }
 
     /**
@@ -167,5 +172,35 @@ public class Ev3AppMain {
         navigator.waitForStop();
     }
 
+    /**
+     * 超音波センサーを利用して障害物までの距離を計測
+     */
+    private void testSensor() {
+        LCD.drawString("Hit Center + Down for exit", 0, 0);
+        SampleProvider distanceMode = ursensor.getDistanceMode();
+        float value[] = new float[distanceMode.sampleSize()];
+        // 超音波センサーの場合distanceMode.sampleSize()は必ず1
+        while (true) {
+            distanceMode.fetchSample(value, 0);
+            int centimeter = (int) (value[0] * 100);
+            // 1mが1.000(min:3cm, max:250cm)
+            if (centimeter > 3 && centimeter <= 10) {
+                executeIndividualOperation(2, centimeter);  // 赤色点灯
+            } else if (centimeter > 10 && centimeter <= 20) {
+                executeIndividualOperation(3, centimeter);  // 橙色点灯
+            } else if (Integer.MAX_VALUE != centimeter && centimeter <= 250) {
+                executeIndividualOperation(1, centimeter);  // 緑色点灯
+            }
+            Delay.msDelay(100);
+        }
+
+    }
+
+    private void executeIndividualOperation(int pattern, int centimeter) {
+        Button.LEDPattern(pattern);
+        LCD.clearDisplay();
+        LCD.drawString("Hit Center + Down for exit", 0, 0);
+        LCD.drawString("Distance: " + centimeter, 0, 2);
+    }
 
 }
