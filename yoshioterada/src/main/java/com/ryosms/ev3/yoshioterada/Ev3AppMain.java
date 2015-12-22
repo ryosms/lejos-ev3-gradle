@@ -8,6 +8,7 @@ import lejos.hardware.ev3.EV3;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.Motor;
 import lejos.robotics.RegulatedMotor;
+import lejos.robotics.navigation.DifferentialPilot;
 import lejos.utility.Delay;
 
 /**
@@ -22,7 +23,7 @@ public class Ev3AppMain {
 
     public static void main(String[] args) {
         Ev3AppMain main = new Ev3AppMain();
-        main.manageMotor3();
+        main.managedByPilot1();
         main.onKeyTouchExit();
     }
 
@@ -120,4 +121,19 @@ public class Ev3AppMain {
         keys.waitForAnyPress();
         System.exit(0);
     }
+
+    /**
+     * 高度なモーターの制御1
+     */
+    private void managedByPilot1() {
+        DifferentialPilot pilot =
+                new DifferentialPilot(5.6f, 13.2f, leftMotor, rightMotor);
+        for (int i = 0; i < 4; i++) {
+            pilot.travel(20);
+            pilot.rotate(90);
+        }
+        pilot.stop();
+    }
+
+
 }
