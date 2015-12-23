@@ -19,6 +19,9 @@ import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.navigation.Navigator;
 import lejos.utility.Delay;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * Created by ryosms on 2015/12/19.
  */
@@ -32,9 +35,56 @@ public class Ev3AppMain {
     // 超音波センサー
     private static final EV3UltrasonicSensor ursensor = new EV3UltrasonicSensor(SensorPort.S4);
 
+    // 並列処理用サービス
+    private ExecutorService exec;
+    private UltrSensorImpl ulSensor;
+
+    /**
+     * コンストラクタ
+     */
+    public Ev3AppMain() {
+        leftMotor.resetTachoCount();
+        rightMotor.resetTachoCount();
+        leftMotor.setSpeed(400);
+        rightMotor.setSpeed(400);
+    }
+
+    /**
+     * メインメソッド
+     *
+     * @param args 起動パラメータ
+     */
     public static void main(String[] args) {
         Ev3AppMain main = new Ev3AppMain();
-        main.testSensor();
+        main.executeConcurrentTask();
+        main.onKeyTouchExitTask();
+    }
+
+    /**
+     * マルチスレッドでタスクを実行
+     */
+    private void executeConcurrentTask() {
+        exec = Executors.newSingleThreadExecutor();
+        ulSensor = new UltrSensorImpl(ursensor, leftMotor, rightMotor);
+        exec.submit(ulSensor);
+        leftMotor.forward();
+        rightMotor.forward();
+    }
+
+    /**
+     * 停止処理
+     */
+    private void onKeyTouchExitTask() {
+        EV3 ev3 = (EV3) BrickFinder.getLocal();
+        Keys keys = ev3.getKeys();
+        keys.waitForAnyPress();
+
+        leftMotor.stop();
+        rightMotor.stop();
+        ursensor.disable();
+        ulSensor.stop();
+        exec.shutdownNow();
+        System.exit(0);
     }
 
     /**
